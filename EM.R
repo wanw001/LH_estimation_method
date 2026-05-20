@@ -1,12 +1,14 @@
+#### EM using LH estimation method ####
 
 setwd("C:/Users/wanwank/OneDrive - University of Tasmania/PhD_Wanwan-Kurniawan/Code/Ch1/Github/LH_estimation_method")
 
 library(rstan)
 
-## Import the length composition sample data
+### Import the length composition sample data
 #Comp
 
-## Format the data for rstan
+### Format the data for rstan
+
 LOW <- Comp$Ll
 MID <- Comp$L
 UP <- Comp$Lu
@@ -41,7 +43,8 @@ chains <- 1
 warmup <- 500
 iter <- 3000
 
-## Fitting using rstan
+### Fitting using rstan
+
 fit <- stan(
   file = stf,         # Stan program
   data = stan_dat,    # named list of data
@@ -50,10 +53,10 @@ fit <- stan(
   iter = iter,        # total number of iterations per chain
 )
 
-## Check traceplot and show summary of results
+### Check traceplot and show summary of results
 traceplot(fit, inc_warmup = TRUE)
 fit
 
-## Store the posterior estimates
+### Store the posterior estimates
 post_est <- as.matrix(fit)
 
