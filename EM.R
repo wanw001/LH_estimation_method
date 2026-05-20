@@ -23,7 +23,7 @@ sa.e <- 0.01 #fraction of individuals surviving at maximum age
 Md <- -log(sa.e)/(X-1) #natural mortality rate per relative age
 CV <- 0.1 #coefficient of variation of length at age
 
-stan_file <- "lbspr-dirichlet.stan"
+stan_file <- "lh_est_code.stan"
 
 stan_dat <- list(
   nl = nl,           
