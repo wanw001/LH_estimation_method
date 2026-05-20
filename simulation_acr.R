@@ -70,7 +70,7 @@ for (mk in MK){
 WRB2 <- WRB[c(2, 3, 6)]
 NS2 <- NS[3:6]
 Re <- 10
-PROP <- read.csv("prop-ar-freq-month-order_rev02.csv")
+#PROP <- read.csv("prop-ar-freq-month-order_rev02.csv")
 COMP.ub <- COMP.rb <- NULL
 PAR.ub <- PAR.rb <- NULL
 scu <- scr <- 0
