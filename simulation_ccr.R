@@ -1,9 +1,11 @@
-#### Simulating the data used in the analysis ####
+#### Simulating the length data under continulous recruitment ####
 
 setwd("C:/Users/wanwank/OneDrive - University of Tasmania/PhD_Wanwan-Kurniawan/Code/Ch1/Github/LH_estimation_method")
 
 library(ggplot2)
 library(arrow)
+
+source("DGM_ccr.R")
 
 #### 2. New way of sensitivity analysis 
 
@@ -43,7 +45,7 @@ NS2 <- NS[4:6]
 linf <- LINF0[4]
 l50 <- L50[2]
 l95r <- L95r[2]
-Re <- 30
+Re <- 10
 
 PROP <- COMP.ub <- COMP.rb <- NULL
 PAR.p <- PAR.ub <- PAR.rb <- NULL
@@ -134,7 +136,7 @@ NS2 <- NS[4:5]
 linf <- LINF[1]
 l50 <- L50[2]
 l95r <- L95r[2]
-Re <- 1
+Re <- 10
 
 PROP <- COMP.ub <- COMP.rb <- NULL
 PAR.p <- PAR.ub <- PAR.rb <- NULL
@@ -226,7 +228,7 @@ NS2 <- NS[4:6]
 linf <- LINF[1]
 l50 <- L50[2]
 l95r <- L95r[2]
-Re <- 30
+Re <- 10
 
 PROP <- COMP.ub <- COMP.rb <- NULL
 PAR.p <- PAR.ub <- PAR.rb <- NULL
@@ -317,7 +319,7 @@ NS2 <- NS[4:6]
 linf <- LINF[1]
 l50 <- L50[2]
 l95r <- L95r[2]
-Re <- 30
+Re <- 10
 
 PROP <- COMP.ub <- COMP.rb <- NULL
 PAR.p <- PAR.ub <- PAR.rb <- NULL
@@ -419,7 +421,7 @@ for (linf0 in LINF0){
 #           89, 92, 95)
 l50 <- L50[2]
 l95r <- L95r[2]
-Re <- 30
+Re <- 10
 
 PROP <- COMP.ub <- COMP.rb <- NULL
 PAR.p <- PAR.ub <- PAR.rb <- NULL
