@@ -61,3 +61,11 @@ fit
 ### Store the posterior estimates
 post_par <- as.matrix(fit)
 
+### Compute median and 90% CrI
+MED <- CrI <- NULL
+np <- 5
+for (p in 1:5){
+  name <- colnames(as.data.frame(post_par))[p]
+  MED <- apply(post_par[, 1:np], 2, median)
+  CrI <- apply(post_par[, 1:np], 2, quantile, probs = c(0.05, 0.95))
+}
