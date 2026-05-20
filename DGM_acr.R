@@ -1,13 +1,23 @@
+#### DGM with pulsed (annual) and constant recruitment ####
 
 setwd("C:/Users/wanwank/OneDrive - University of Tasmania/PhD_Wanwan-Kurniawan/Code/Ch1/Github/LH_estimation_method")
 
 library(ggplot2)
 library(arrow)
 
-#### DGM with pulsed (annual) and constant recruitment ####
-
 ### Generate length distribution in fine binning for a specific month of observation  
 sizeProp.acr <- function(linf, mk, l50, l95r, l0r, sa, cv, w, mr, mo){
+  
+  #linf = Linf
+  #mk = M/K
+  #l50 = L50
+  #l95r = L95/L50
+  #l0r = length at zero age
+  #sa = fraction of individuals surviving at maximum age
+  #cv = CV of length at age
+  #w = fine bin width representing population length
+  #mr = vector of months of recruitment
+  #mo = month of observation
   
   ## Construct age classes, recruitment periodicity, and growth
   m <- 0.3

@@ -5,24 +5,25 @@ setwd("C:/Users/wanwank/OneDrive - University of Tasmania/PhD_Wanwan-Kurniawan/C
 library(rstan)
 
 ### Import the length composition sample data
-#Comp
+Comp <- read.csv("Comp.csv")
 
 ### Format the data for rstan
 
-LOW <- Comp$Ll
-MID <- Comp$L
-UP <- Comp$Lu
-nl <- length(LOW)
-Lmin <- LOW[1]
-Lmax <- UP[nl]
-N <- sum(Comp$Nl.obs)
-Nl <- unlist(Comp$Nl.obs)
-Lopt <- UP[which(Nl==max(Nl))][1]
-X <- 200
-sa.e <- 0.01
-Md <- -log(sa.e)/(X-1)
-CV <- 0.1
-Stan.file <- c("lbspr-dirichlet.stan")
+LOW <- Comp$Ll #vector of lower bounds of size bins
+MID <- Comp$L #vector of mid size of bins
+UP <- Comp$Lu #vector of upper bounds of size bins
+nl <- length(LOW) #number of size bins
+Lmin <- LOW[1] #lower bound of the lowest bin
+Lmax <- UP[nl] #upper bound of the highest bin
+N <- sum(Comp$Nl.obs) #total abundance
+Nl <- unlist(Comp$Nl.obs) #vector of observed number at bin
+Lopt <- UP[which(Nl==max(Nl))][1] #mid value of bin with highest abundance
+X <- 200 #number of relative age classes
+sa.e <- 0.01 #fraction of individuals surviving at maximum age
+Md <- -log(sa.e)/(X-1) #natural mortality rate per relative age
+CV <- 0.1 #coefficient of variation of length at age
+
+stan_file <- "lbspr-dirichlet.stan"
 
 stan_dat <- list(
   nl = nl,           
@@ -46,7 +47,7 @@ iter <- 3000
 ### Fitting using rstan
 
 fit <- stan(
-  file = stf,         # Stan program
+  file = stan_file,         # Stan program
   data = stan_dat,    # named list of data
   chains = chains,    # number of Markov chains
   warmup = warmup,    # number of warmup iterations per chain
@@ -58,5 +59,5 @@ traceplot(fit, inc_warmup = TRUE)
 fit
 
 ### Store the posterior estimates
-post_est <- as.matrix(fit)
+post_par <- as.matrix(fit)
 

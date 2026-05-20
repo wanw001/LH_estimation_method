@@ -1,32 +1,32 @@
-// Estimating M/K, Linf, and observation selectivity parameters using length frequency data from underwater survey 
+// Estimate M/K, Linf, and L50 and L95
 
-// Input data
+//Input data
 data {
-  int<lower=1>        nl; // number of size classes
-  vector[nl]         LOW; // lower bounds of size classes
-  vector[nl]         MID; // mid size in each class
-  vector[nl]          UP; // upper bounds of size classes
-  real<lower=0>     Lmin; // mid size of lowest size class
-  real<lower=0>     Lopt; // mid size of size class with highest abundance
-  real<lower=0>     Lmax; // mid size of highest size class
-  int<lower=0>         N; // total abundance of fish
-  vector[nl]          Nl; // Vector of abundance at size        
-  int<lower=1>         X; // maximum relative age +1
+  int<lower=1>        nl; // number of size bins
+  vector[nl]         LOW; // vector of lower bounds of size bins
+  vector[nl]         MID; // vector of mid value of size bins
+  vector[nl]          UP; // vector of upper bounds of size bins
+  real<lower=0>     Lmin; // lower bound of minimum size bin
+  real<lower=0>     Lopt; // mid value of bin with maximum abundance
+  real<lower=0>     Lmax; // upper bound of maximum size bin
+  int<lower=0>         N; // total abundance
+  vector[nl]          Nl; // Vector of abundance at size bin        
+  int<lower=1>         X; // number of relative ages
   real<lower=0>       sa; // proportion of cohort surviving to maximum age
   real<lower=0>       Md; // natural mortality rate per relative time
   real<lower=0>       CV; // CV of size at age
 }
 
-// Model parameters
+//Model parameters
 parameters {
-  real<lower=0.1, upper=6>                    MK; // M/K ratio
-  real<lower=(Lmin+Lmax)/2, upper=1.5*Lmax> Linf; // Infinite fish size
-  real<lower=0.1, upper=Lmax>                L50; // length at 50% observe
-  real<lower=1.0001, upper=4>               L95r; // length at 95% observed relative to L50
+  real<lower=0.01, upper=6>                   MK; // M/K ratio
+  real<lower=(Lmin+Lmax)/2, upper=1.5*Lmax> Linf; // Asymptotic size
+  real<lower=0.1, upper=Lmax>                L50; // length at 50% observed
+  real<lower=1.0001, upper=4>               L95r; // length at 50% observed relative to L50
   real<lower=0.001>                       theta0; // precision parameter
 }
 
-// Model likelihood
+//Model likelihood
 model {
   real               alp;
   real                La;
@@ -39,19 +39,19 @@ model {
   vector[nl]       Nobs0;
   vector[nl]        Nobs;
   vector[nl]       Nobs2;
-  real            SNobs0;
-  real           theta_k;
+  real           theta_i;
   real                 R;
   real               eps; // miss-classification rate
   
-  // set priors for parameters
+
+  //Set priors for parameters
   theta0 ~ exponential(0.005);
   MK     ~ normal(1.5, 3);
   Linf   ~ normal(0.9*Lmax, 0.3*Lmax);
   L50    ~ normal((Lmin+Lopt)/2, (Lopt-Lmin)/2);
   L95r   ~ normal(1.8, 1.5);
   
-  // Age-size transition matrix in population
+  //Age-size transition matrix in population
   for (x in 1:X){
     La = Linf*(1-sa^(1/MK*(x-1)/(X-1)));
     sdL = CV*La;
@@ -73,26 +73,21 @@ model {
     Nx[x] = Nx[x-1]*exp(-Md);
   }
   
-  //Size composition (real)
+  //Population size distribution
   Nreal0 = (Nx' * PP')';
   Nreal = Nreal0/sum(Nreal0);
   
-  //Size composition (observed)
+  //Observed size distribution
   alp = log(19)/(L95r*L50-L50);
   for (i in 1:nl){
     Sl[i] = 1/(1 + exp(-alp*(MID[i]-L50))); //Observation selectivity
     Nobs0[i] = Sl[i]*Nreal[i];
   }
-  SNobs0 = 0;
-  for (i in 1:nl){
-    SNobs0 = SNobs0 + Nobs0[i];
-  }
-  for (i in 1:nl){
-    Nobs[i] = Nobs0[i]/SNobs0;
-  }
+  Nobs = Nobs0/sum(Nobs0);
 
-  // //add missclassification
-  // eps = 0.0001;
+  // // add missclassification
+  // //Nobs2 = Nobs;
+  // eps = 0.01;
   // for (i in 1:nl) {
   //   Nobs2[i] = eps + (1.0 - nl*eps)*Nobs[i];    
   // }
@@ -100,9 +95,9 @@ model {
   
   target += lgamma(theta0) + lgamma(N+1) - lgamma(N+theta0); 
   
-  //Likelihood using DM distribution
+  //Likelihood according DM distribution
   for (i in 1:nl) { 
-    theta_k = theta0*Nobs2[i];
-    target += lgamma(Nl[i] + theta_k) - lgamma(theta_k) - lgamma(Nl[i]+1);
+    theta_i = theta0*Nobs2[i];
+    target += lgamma(Nl[i] + theta_i) - lgamma(theta_i) - lgamma(Nl[i]+1);
   }
 }

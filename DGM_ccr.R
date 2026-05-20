@@ -7,6 +7,15 @@ library(arrow)
 
 ### Generate length distribution in fine binning  
 sizeProp.ccr <- function(linf, mk, l50, l95r, l0r, sa, cv, X, w){
+  #linf = Linf
+  #mk = M/K
+  #l50 = L50
+  #l95r = L95/L50
+  #l0r = length at zero age
+  #sa = fraction of individuals surviving at maximum age
+  #cv = CV of length at age
+  #X = number of relative age class
+  #w = fine bin width representing population length
   
   ## Construct relative abundance at age (relative with respect to recruitment)
   m <- 0.3
@@ -69,6 +78,10 @@ sizeProp.ccr <- function(linf, mk, l50, l95r, l0r, sa, cv, X, w){
 ### Generate length composition sample for a given sample size
 sizeComp <- function(r, Prop, ns){
   
+  #r = index of replicates
+  #Prop = a dataframe or vector containing vector of length binning and proportion at length
+  #ns = sample size
+  
   set.seed(r)
   
   L <- Prop$L; Ll=Prop$Ll; Lu=Prop$Lu; nl <- dim(Prop)[1]
@@ -83,14 +96,11 @@ sizeComp <- function(r, Prop, ns){
   # }
   
   #Draw size using function sample
-  #A1 <- sample(L, ns, replace=TRUE, pl); Nl <- rep(0, nl)
   B1 <- sample(L, ns, replace=TRUE, pl.o); Nl.o <- rep(0, nl)
   for (i in 1:nl){
-    #A2 <- which(A1==L[i]); #Nl[i] <- Nl[i] + length(A2);
     B2 <- which(B1==L[i]); Nl.o[i] <- Nl.o[i] + length(B2)
   }
   
-  #df2 <- data.frame(L=L, Nl.obs=Nl.o, nl=nl, N.obs=sum(Nl.o), Ll=Ll, Lu=Lu, Nl=Nl, pl=pl, pl.obs=pl.o)
   df2 <- data.frame(L=L, Nl.obs=Nl.o, nl=nl, N.obs=sum(Nl.o), Ll=Ll, Lu=Lu, pl=pl, pl.obs=pl.o)
   
   return (df2)
@@ -98,6 +108,9 @@ sizeComp <- function(r, Prop, ns){
 
 ### Rebin the size composition sample into observational binning
 sizeComp.rebin <- function(B, Comp){
+  
+  #B = vector of bounds of observational bins from lower bound of lowest bin to upper bound of highest bin
+  #Comp = data frame or vector containing vector of length binning and number at bin for population length binning
   
   nl <- length(B) - 1
   Ll <- B[1:nl]; Lu <- B[2:(nl+1)]; L <- (Ll + Lu)/2
