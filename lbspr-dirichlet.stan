@@ -1,32 +1,29 @@
-// Estimating M/K and Linf from length frequency data from underwater survey 
+// Estimating M/K, Linf, and observation selectivity parameters using length frequency data from underwater survey 
 
 // Input data
 data {
-  // known fish life-history traits
   int<lower=1>        nl; // number of size classes
   vector[nl]         LOW; // lower bounds of size classes
   vector[nl]         MID; // mid size in each class
   vector[nl]          UP; // upper bounds of size classes
-  real<lower=0>     Lmin;
-  real<lower=0>     Lopt;
-  real<lower=0>     Lmax; // maxmimum size
-  int<lower=0>         N; // Total abundance of fish
+  real<lower=0>     Lmin; // mid size of lowest size class
+  real<lower=0>     Lopt; // mid size of size class with highest abundance
+  real<lower=0>     Lmax; // mid size of highest size class
+  int<lower=0>         N; // total abundance of fish
   vector[nl]          Nl; // Vector of abundance at size        
   int<lower=1>         X; // maximum relative age +1
   real<lower=0>       sa; // proportion of cohort surviving to maximum age
-  real<lower=0>       Md; // Natural mortality rate per relative time
+  real<lower=0>       Md; // natural mortality rate per relative time
   real<lower=0>       CV; // CV of size at age
 }
 
 // Model parameters
 parameters {
-  // estimated fish life-history parameters
   real<lower=0.1, upper=6>                    MK; // M/K ratio
   real<lower=(Lmin+Lmax)/2, upper=1.5*Lmax> Linf; // Infinite fish size
-  real<lower=0.1, upper=Lmax>                L50; // length when 50% observe
-  real<lower=1.0001, upper=4>               L95r; // steepness of observability w.r.t. length
-  // variance parameter for observed abundances
-  real<lower=0.001>       theta0;
+  real<lower=0.1, upper=Lmax>                L50; // length at 50% observe
+  real<lower=1.0001, upper=4>               L95r; // length at 95% observed relative to L50
+  real<lower=0.001>                       theta0; // precision parameter
 }
 
 // Model likelihood
@@ -47,7 +44,6 @@ model {
   real                 R;
   real               eps; // miss-classification rate
   
-
   // set priors for parameters
   theta0 ~ exponential(0.005);
   MK     ~ normal(1.5, 3);
