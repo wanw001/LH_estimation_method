@@ -1,2 +1,1 @@
-These codes are supplementing the publication xxxx currently under review in Fisheries Research. 
-Please do not use the codes while the manuscript is under review. 
+These codes are supplementing the publication https://doi.org/10.1016/j.fishres.2026.107811 in Fisheries Research.  
